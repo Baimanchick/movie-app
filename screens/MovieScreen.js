@@ -22,6 +22,7 @@ import {
   fallbackMoviePoster,
   fetchMovieCredits,
   fetchMovieDetails,
+  fetchSimilarMovies,
   image500,
 } from "../api/moviedb";
 
@@ -33,8 +34,8 @@ export default function MovieScreen() {
   const { params: item } = useRoute();
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
-  const [cast, setCast] = useState([]);
-  const [similarMovies, setSimilarMovies] = useState([]);
+  const [cast, setCast] = useState([1, 2, 3, 4, 5]);
+  const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5]);
   const [loading, setLoading] = useState(false);
   const [movie, setMovie] = useState({});
 
@@ -46,6 +47,7 @@ export default function MovieScreen() {
     setLoading(true);
     getMovieDetails(item.id);
     getMovieCredits(item.id);
+    getSimilarMovies(item.id);
   }, []);
 
   const getMovieDetails = async (id) => {
@@ -59,6 +61,13 @@ export default function MovieScreen() {
     const data = await fetchMovieCredits(id);
     // console.log("got movie credits", data);
     if (data && data.cast) setCast(data.cast);
+    // setLoading(false);
+  };
+
+  const getSimilarMovies = async (id) => {
+    const data = await fetchSimilarMovies(id);
+    console.log("got simlliar", data);
+    if (data && data.cast) setSimilarMovies(data.results);
     // setLoading(false);
   };
 
@@ -155,7 +164,7 @@ export default function MovieScreen() {
       <Cast navigation={navigation} cast={cast} />
 
       {/* similar movies */}
-      {/* <MoveList title="Similar Movies" hideSeeAll data={similarMovies} /> */}
+      <MoveList title="Similar Movies" hideSeeAll data={similarMovies} />
     </ScrollView>
   );
 }
